@@ -16,6 +16,6 @@ namespace MiniPetGameV1
         public int Xp { get; set; }
         public int TargetLvl { get; set; }
         public int Coin { get; set; }
-         
+
     }
 }

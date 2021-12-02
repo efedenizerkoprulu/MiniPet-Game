@@ -7,9 +7,9 @@ namespace MiniPetGameV1
 {
     class ShopManeger
     {
-       public List<Item> ItemList;
+        public List<Item> ItemList;
 
-      public List<Item> Iteam()
+        public List<Item> Iteam()
         {
             Item Weapon1 = new Item();
             Weapon1.ItemId = 1;
@@ -25,12 +25,12 @@ namespace MiniPetGameV1
             Weapon2.Damage = 40;
             Weapon2.Name = "Gümüş Kılıç";
 
-            
 
-            
-          
 
-            ItemList = new List<Item>() { Weapon1, Weapon2};
+
+
+
+            ItemList = new List<Item>() { Weapon1, Weapon2 };
             return ItemList;
         }
 
@@ -38,12 +38,12 @@ namespace MiniPetGameV1
         {
             Iteam();
             Console.WriteLine("---> Dükkana Hoş geldin <----\n");
-            Console.WriteLine("Paranız: "+ Coin);
+            Console.WriteLine("Paranız: " + Coin);
             Console.WriteLine("Ekipmanlar:");
 
             foreach (var Item in ItemList)
             {
-                Console.WriteLine(Item.ItemId + "." + " " + Item.Name + " " +"Fiyatı: "+ Item.Price);
+                Console.WriteLine(Item.ItemId + "." + " " + Item.Name + " " + "Fiyatı: " + Item.Price);
             }
             Console.WriteLine("\n");
         }
@@ -51,9 +51,9 @@ namespace MiniPetGameV1
         {
             Iteam();
             Console.Write("Almak isteğiniz ürünü girin : ");
-            byte GetItem =Convert.ToByte( Console.ReadLine());
+            byte GetItem = Convert.ToByte(Console.ReadLine());
             var GetPrice = from s in ItemList where s.ItemId == GetItem select s.Price;
-            if (p1.Coin>=GetPrice.FirstOrDefault() && ItemList.Count() > GetItem )
+            if (p1.Coin >= GetPrice.FirstOrDefault() && ItemList.Count() > GetItem)
             {
                 p1.inventory.Add(ItemList[GetItem - 1]);
                 p1.Coin -= GetPrice.FirstOrDefault();

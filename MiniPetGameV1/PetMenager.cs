@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Linq;
 
 namespace MiniPetGameV1
 {
     class PetMenager : ShopManeger
     {
-        public List<Pet> petList;
         byte Selection;
+        public static string backToMenu = "\n Menüye Dönülüyor";
+        public List<Pet> petList;
         Pet p1;
         FightMenager fMenager;
         ShopManeger sManager;
@@ -16,11 +18,14 @@ namespace MiniPetGameV1
         public PetMenager()
         {
             sManager = new ShopManeger();
-            fMenager= new FightMenager(); 
+            fMenager = new FightMenager();
             petList = new List<Pet>();
+
             Console.WriteLine("----> Evcil hayvan oyununa hoş geldiniz <----\n");
             Console.WriteLine("----> Bu Proje tamamen eğlence  amaçlı yapılmış açık kaynak bir projedir. Tur mantığı düşünülerek kodlanmıştır. her yaptığınız eylem bitişinde 1 gün geçer ve açıkır, susarsınız. <----\n");
+
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
             Menu.Add("1. Hayvanının durumuna bak.");
             Menu.Add("2. Hayvanına yemek ver.");
             Menu.Add("3. Hayvanına su ver.");
@@ -32,79 +37,99 @@ namespace MiniPetGameV1
         public bool addNewPet()
         {
             p1 = new Pet();
-            p1.inventory = new List<Item>();
-            Console.Write("Hayvan oluşturmaya Hayvanına bir isim ver. (En az 2 karakter): ");
-            p1.PetName = Console.ReadLine();
-            if (p1.PetName.Length >= 2)
+        RestartGame:
+            try
             {
-                p1.Heart = 100;
-                p1.isHungary = 100;
-                p1.isThirsty = 100;
-                p1.Lvl = 1;
-                p1.Xp = 0;
-                p1.TargetLvl = 100;
-                p1.Coin = 250;
+                p1.inventory = new List<Item>();
+                Console.Write("Hayvan oluşturmaya Hayvanına bir isim ver. (En az 2 karakter): ");
+                p1.PetName = Console.ReadLine();
 
-                Console.WriteLine("Evcil hayvanınız oluşturuldu, Hoş geldin" + " " + p1.PetName + "\n");
-                petList.Add(p1);
-                return true;
+                if (p1.PetName.Length >= 2)
+                {
+                    p1.Heart = 100;
+                    p1.isHungary = 100;
+                    p1.isThirsty = 100;
+                    p1.Lvl = 1;
+                    p1.Xp = 0;
+                    p1.TargetLvl = 100;
+                    p1.Coin = 250;
+
+                    Console.WriteLine("Evcil hayvanınız oluşturuldu, Hoş geldin" + " " + p1.PetName + "\n");
+                    petList.Add(p1);
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("Hayvanınız en az 2 karakter olması gerekiyor.");
+                }
             }
-            else
+            catch (Exception)
             {
-                Console.WriteLine("Hayvanınız en az 2 karakter olması gerekiyor.");
-                return false;
+                Console.WriteLine("Satace sayı giriniz !!!");
+                Thread.Sleep(3000);
             }
+
+            goto RestartGame;
+
+
         }
 
         public void pMenu()
         {
-            Console.WriteLine("---> Menü <----\n");
-
-            foreach (var element in Menu)
+        BackToMemu:
+            try
             {
-                Console.WriteLine(element);
+                do
+                {
+                    Console.Clear();
+                    Console.WriteLine("---> Menü <----\n");
+
+                    foreach (var element in Menu)
+                    {
+                        Console.WriteLine(element);
+                    }
+
+                    Console.Write("seçim Yapın: ");
+                    Selection = Convert.ToByte(Console.ReadLine());
+
+                    switch (Selection)
+                    {
+                        case 1:
+                            showPetStats(p1);
+
+                            break;
+                        case 2:
+                            giveLunch();
+                            break;
+                        case 3:
+                            giveWater();
+                            break;
+                        case 4:
+                            isPurchaseItem();
+                            break;
+                        case 5:
+                            showInventory();
+                            break;
+                        case 6:
+                            enterArea();
+                            break;
+                        case 7:
+                            doctor();
+                            break;
+
+                        default:
+                            Console.WriteLine("Böyle bir işlem yok, 1-6 arasında sayı giriniz");
+                            pMenu();
+                            break;
+                    }
+                } while (Selection != 8);
             }
-
-            Console.Write("seçim Yapın: ");
-            Selection = Convert.ToByte(Console.ReadLine());
-
-            switch (Selection)
+            catch (Exception)
             {
-                case 1:
-                    showPetStats(p1);
-                    pMenu();
-                    break;
-                case 2:
-                    giveLunch();
-                    pMenu();
-                    break;
-                case 3:
-                    giveWater();
-                    pMenu();
-                    break;
-                case 4:
-                    isPurchaseItem();
-                    pMenu();
-                    break;
-                case 5:
-                    showInventory();
-                    pMenu();
-                    manuelTimer(p1);
-                    break;
-                case 6:
-                        enterArea();
-                        pMenu();
-                        break;
-                case 7:
-                    doctor();
-                    pMenu();
-                    break;
-
-                default:
-                   Console.WriteLine("Böyle bir işlem yok, 1-6 arasında sayı giriniz");
-                    pMenu();
-                    break;
+                Console.WriteLine("Satace sayı giriniz !!!");
+                Thread.Sleep(3000);
             }
+            goto BackToMemu;
         }
 
         public void showPetStats(Pet p1)
@@ -118,6 +143,10 @@ namespace MiniPetGameV1
             Console.WriteLine("Hayvanınızın Tecrübesi: " + p1.Xp);
             Console.WriteLine("Paranız: " + p1.Coin + "\n");
             manuelTimer(p1);
+            Console.WriteLine(backToMenu);
+            Thread.Sleep(3000);
+
+
         }
 
         public void manuelTimer(Pet p1)
@@ -137,6 +166,8 @@ namespace MiniPetGameV1
             p1.Xp += 20;
             isLvlUp();
             manuelTimer(p1);
+            Console.WriteLine(backToMenu);
+            Thread.Sleep(2000);
         }
 
         public void giveWater()
@@ -146,6 +177,8 @@ namespace MiniPetGameV1
             p1.Xp += 20;
             isLvlUp();
             manuelTimer(p1);
+            Console.WriteLine(backToMenu);
+            Thread.Sleep(2000);
         }
 
         public void isPurchaseItem()
@@ -153,16 +186,20 @@ namespace MiniPetGameV1
             ShowIteam(p1.Coin);
             Console.Write("Ekipman almak ister misiniz? (E / H): ");
             var Select = Console.ReadLine();
-            if (Select=="E" || Select=="e")
+            if (Select == "E" || Select == "e")
             {
                 purchaseItem(p1);
                 manuelTimer(p1);
+                Console.WriteLine(backToMenu);
+                Thread.Sleep(3000);
 
             }
             else if (Select == "H" || Select == "h")
             {
                 pMenu();
                 manuelTimer(p1);
+                Console.WriteLine(backToMenu);
+                Thread.Sleep(3000);
             }
             else
             {
@@ -172,29 +209,35 @@ namespace MiniPetGameV1
             }
         }
 
-        public void showInventory()
+        public void showInventory(string text= null)
         {
-            
-            if (p1.inventory.Count!=0)
+            if (string.IsNullOrEmpty(text))
+                text = PetMenager.backToMenu;
+
+            if (p1.inventory.Count != 0)
             {
                 Console.WriteLine("----> Envanter <----\n");
                 foreach (var PInventory in p1.inventory)
                 {
                     Console.WriteLine("1." + " " + PInventory.Name + " " + "Türü: " + PInventory.Type + "\n");
                 }
+                
+                Console.WriteLine(text);
+                Thread.Sleep(2500);
             }
             else
             {
                 Console.WriteLine("----> Envanter <----\n");
                 Console.WriteLine("Envanteriniz boş, Önce dükkandan bir eşya alınız. \n");
-                pMenu();
+
+
             }
         }
         public void enterArea()
         {
-            if (p1.Heart>50)
+            if (p1.Heart > 50)
             {
-                showInventory();
+                showInventory("Depoya bakılıyor");
                 p1.GetIteam = new List<Item>();
                 Console.Write("Savaşa katılmak için bir silah seçiniz: ");
                 byte Select = Convert.ToByte(Console.ReadLine());
@@ -204,7 +247,7 @@ namespace MiniPetGameV1
                     p1.GetIteam.Add(p1.inventory[Select - 1]);
                     Console.WriteLine(isWeapon.FirstOrDefault() + " Silahını kuşandın savaşa hazırsın.");
                     Console.WriteLine("Savaş başlıyor..");
-                    System.Threading.Thread.Sleep(2500);
+                    Thread.Sleep(2500);
                     fMenager.Fight(p1);
                     manuelTimer(p1);
                 }
@@ -217,28 +260,31 @@ namespace MiniPetGameV1
             else
             {
                 Console.WriteLine("Canınız çok düşük tedavi olunuz");
-                pMenu();
+                Console.WriteLine(backToMenu);
+                Thread.Sleep(3000);
             }
-            
+
         }
 
         public void doctor()
         {
             Console.WriteLine("----> Doktora Hoş geldiniz <----\n");
-            if (p1.Heart<=50)
+            if (p1.Heart <= 50)
             {
                 p1.Heart = 100;
                 Console.WriteLine("Tedavi olmak için biraz bekleyin tedavi olunuyor..");
                 System.Threading.Thread.Sleep(2500);
                 Console.WriteLine("Tedavi olundu sağlıklı günler. \n");
-                pMenu();
                 manuelTimer(p1);
+                Console.WriteLine(backToMenu);
+                Thread.Sleep(3000);
             }
             else
             {
                 Console.WriteLine("Gayet sağlıklısınız.\n");
-                pMenu();
                 manuelTimer(p1);
+                Console.WriteLine(backToMenu);
+                Thread.Sleep(3000);
             }
         }
 
@@ -254,7 +300,5 @@ namespace MiniPetGameV1
             }
             return false;
         }
-        
-
     }
 }
