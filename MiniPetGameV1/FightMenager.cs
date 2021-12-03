@@ -7,10 +7,6 @@ namespace MiniPetGameV1
 {
     class FightMenager
     {
-        Pet p1;
-        Item Item1;
-        PetMenager pm = default;
-
         Random rEnemydamage = new Random();
         Random rDamage = new Random();
 

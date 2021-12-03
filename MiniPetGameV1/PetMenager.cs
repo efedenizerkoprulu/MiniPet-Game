@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace MiniPetGameV1
 {
@@ -37,20 +38,20 @@ namespace MiniPetGameV1
         public bool addNewPet()
         {
             p1 = new Pet();
-        RestartGame:
+            RestartGame:
             try
             {
                 p1.inventory = new List<Item>();
                 Console.Write("Hayvan oluşturmaya Hayvanına bir isim ver. (En az 2 karakter): ");
                 p1.PetName = Console.ReadLine();
 
-                if (p1.PetName.Length >= 2)
+                if (p1.PetName.Length >= 2 && !Regex.IsMatch(p1.PetName, @"\d"))
                 {
                     p1.Heart = 100;
                     p1.isHungary = 100;
                     p1.isThirsty = 100;
                     p1.Lvl = 1;
-                    p1.Xp = 0;
+                    p1.Xp = 0;  
                     p1.TargetLvl = 100;
                     p1.Coin = 250;
 
